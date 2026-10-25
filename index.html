@@ -1,415 +1,197 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hilton Penfold | Senior Social Sustainability Consultant</title>
+    <title>Hilton Penfold | Portfolio</title>
     
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts for Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            offwhite: '#F8FAFC', // soft background
-                            slate: '#334155',    // main text
-                            teal: '#0F766E',     // primary accent
-                            sage: '#5EEAD4',     // light accent
-                            blue: '#1E3A8A',     // deep blue for headers
-                            grey: '#94A3B8'      // soft grey borders/meta
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
+        /* Modern, Minimalist CSS Reset and Variables */
+        :root {
+            --slate: #334155;
+            --sage: #5e8a75;
+            --light-grey: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+
         body {
-            background-color: theme('colors.brand.offwhite');
-            color: theme('colors.brand.slate');
-        }
-        /* Custom map styling to blend with minimalist theme */
-        .leaflet-container {
             font-family: 'Inter', sans-serif;
-            border-radius: 1rem;
-            z-index: 10;
+            background-color: var(--light-grey);
+            color: var(--slate);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
         }
-        .leaflet-popup-content-wrapper {
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+        header {
+            background-color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
         }
-        .leaflet-popup-content {
-            margin: 1rem;
-        }
-        .popup-title {
+
+        h1 {
             font-weight: 600;
-            color: theme('colors.brand.blue');
-            margin-bottom: 0.25rem;
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
         }
-        .popup-meta {
-            font-size: 0.875rem;
-            color: theme('colors.brand.slate');
+
+        p.subtitle {
+            font-weight: 300;
+            font-size: 1.1rem;
+            color: var(--sage);
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--slate);
+        }
+
+        /* Map Styling */
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 50px;
+            border: 1px solid var(--border);
+            z-index: 1; /* Keeps map below sticky headers if added */
+        }
+
+        /* Layout for Chart and Text */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .chart-container {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-brand-sage selection:text-brand-blue">
+<body>
 
-    <!-- Header / Hero Section -->
-    <header class="max-w-6xl mx-auto px-6 pt-24 pb-16 lg:pt-32 lg:pb-24">
-        <div class="max-w-3xl">
-            <h1 class="text-4xl md:text-6xl font-bold text-brand-blue tracking-tight mb-4">Hilton Penfold</h1>
-            <h2 class="text-xl md:text-2xl font-medium text-brand-teal mb-6">Senior Social Sustainability Consultant</h2>
-            <p class="text-lg text-brand-slate leading-relaxed mb-8">
-                Holding a PhD in Human Geography and bringing over 9 years of cross-disciplinary experience across academic research, local government, and major infrastructure social impact assessment. Specializing in navigating complex social terrains to deliver culturally sensitive, equitable, and sustainable community outcomes across the Asia-Pacific region.
-            </p>
-            <div class="flex gap-4">
-                <a href="#map-section" class="px-6 py-3 bg-brand-blue text-white font-medium rounded-lg hover:bg-opacity-90 transition-all shadow-sm">View Global Impact</a>
-                <a href="#projects-section" class="px-6 py-3 bg-white text-brand-blue border border-brand-grey/30 font-medium rounded-lg hover:bg-gray-50 transition-all shadow-sm">Browse Projects</a>
-            </div>
-        </div>
+    <header>
+        <h1>Hilton Penfold</h1>
+        <p class="subtitle">Senior Social Sustainability Consultant</p>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-6xl mx-auto px-6 pb-24 space-y-24">
+    <div class="container">
+        
+        <div class="section-title">Global Project Footprint</div>
+        <div id="map"></div>
 
-        <!-- Interactive Map Section -->
-        <section id="map-section" class="space-y-6">
-            <div class="flex items-end justify-between border-b border-brand-grey/20 pb-4">
-                <div>
-                    <h3 class="text-2xl font-semibold text-brand-blue">Geographic Footprint</h3>
-                    <p class="text-brand-slate mt-1">Interactive map spanning Australia, the Pacific, and Bhutan.</p>
-                </div>
+        <div class="grid-layout">
+            <div>
+                <div class="section-title">Sectors of Expertise</div>
+                <p>Delivering comprehensive Social Impact Assessments (SIA), Resettlement Action Plans (RAP), and stakeholder engagement strategies across complex infrastructure, renewable energy, and community development projects.</p>
             </div>
-            
-            <!-- Map Container -->
-            <div class="w-full h-[500px] lg:h-[600px] bg-white rounded-2xl shadow-sm border border-brand-grey/20 relative z-0" id="projectMap"></div>
-        </section>
-
-        <!-- Sector Visualization Section -->
-        <section class="space-y-6">
-            <div class="flex items-end justify-between border-b border-brand-grey/20 pb-4">
-                <div>
-                    <h3 class="text-2xl font-semibold text-brand-blue">Experience by Sector</h3>
-                    <p class="text-brand-slate mt-1">A proportional breakdown of consulting and research focus.</p>
-                </div>
+            <div class="chart-container">
+                <canvas id="sectorsChart"></canvas>
             </div>
-            
-            <div class="bg-white rounded-2xl shadow-sm border border-brand-grey/20 p-8 flex flex-col md:flex-row items-center justify-center gap-12">
-                <div class="w-full max-w-sm">
-                    <canvas id="sectorChart"></canvas>
-                </div>
-                <div class="flex flex-col gap-4 w-full md:w-auto">
-                    <div class="flex items-center gap-3">
-                        <div class="w-4 h-4 rounded-full bg-brand-blue"></div>
-                        <span class="font-medium text-brand-slate">Renewable Energy (45%)</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-4 h-4 rounded-full bg-[#0F766E]"></div>
-                        <span class="font-medium text-brand-slate">Infrastructure & Transport (25%)</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-4 h-4 rounded-full bg-[#5EEAD4]"></div>
-                        <span class="font-medium text-brand-slate">Community & Indigenous Research (15%)</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-4 h-4 rounded-full bg-[#94A3B8]"></div>
-                        <span class="font-medium text-brand-slate">Resources & Land Acquisition (15%)</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience & Projects Grid -->
-        <section id="projects-section" class="space-y-8">
-            <div class="flex items-end justify-between border-b border-brand-grey/20 pb-4">
-                <div>
-                    <h3 class="text-2xl font-semibold text-brand-blue">Featured Projects & Assessments</h3>
-                    <p class="text-brand-slate mt-1">Detailed portfolio of social impact and sustainability engagements.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Project Card 1 -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-grey/20 hover:shadow-md transition-shadow group">
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-teal mb-2 block">Infrastructure / Displacement</span>
-                    <h4 class="text-lg font-bold text-brand-blue mb-1">Gelephu - Tareythang Road & Bridges</h4>
-                    <p class="text-sm text-brand-slate mb-4 font-medium">Sarpang, Bhutan | Jul 2024 – Feb 2025</p>
-                    <p class="text-sm text-brand-slate/80 leading-relaxed">
-                        Drafted the Resettlement Action Plan for the Gelephu Mindfulness City Special Administrative Region highway. Managed economic and physical displacement, developed entitlement matrices, and livelihood restoration measures.
-                    </p>
-                </div>
-
-                <!-- Project Card 2 -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-grey/20 hover:shadow-md transition-shadow group">
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-teal mb-2 block">Resources / Indigenous Engagement</span>
-                    <h4 class="text-lg font-bold text-brand-blue mb-1">Geothermal Power Plant Ijen</h4>
-                    <p class="text-sm text-brand-slate mb-4 font-medium">Bondowoso, East Java | Jun 2023 – Aug 2023</p>
-                    <p class="text-sm text-brand-slate/80 leading-relaxed">
-                        Developed Land Acquisition Framework and Livelihood Restoration Plan for a 340MW project involving physical and economic displacement of Indigenous groups. Conducted IFC standards gap analysis.
-                    </p>
-                </div>
-
-                <!-- Project Card 3 -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-grey/20 hover:shadow-md transition-shadow group">
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-teal mb-2 block">Transport / Freight</span>
-                    <h4 class="text-lg font-bold text-brand-blue mb-1">Greenbushes to Bunbury Rail</h4>
-                    <p class="text-sm text-brand-slate mb-4 font-medium">Greenbushes, WA | Jul 2023 – Aug 2024</p>
-                    <p class="text-sm text-brand-slate/80 leading-relaxed">
-                        Drafted the Stakeholder Engagement Plan for recommissioning a railway for lithium transport. Addressed social implications of freight infrastructure, community safety perceptions, and land use compatibility.
-                    </p>
-                </div>
-
-                <!-- Project Card 4 -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-grey/20 hover:shadow-md transition-shadow group">
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-teal mb-2 block">Renewable Energy</span>
-                    <h4 class="text-lg font-bold text-brand-blue mb-1">Keri Keri Wind Farm</h4>
-                    <p class="text-sm text-brand-slate mb-4 font-medium">Balranald, NSW | Jan 2023 – Apr 2024</p>
-                    <p class="text-sm text-brand-slate/80 leading-relaxed">
-                        Authored the Social Impact Assessment for a 155-turbine development. Addressed perceived changes to rural landscape, developed social baselines, and a preliminary Social Impact Management Plan.
-                    </p>
-                </div>
-
-                <!-- Project Card 5 -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-grey/20 hover:shadow-md transition-shadow group">
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-teal mb-2 block">Renewable Energy</span>
-                    <h4 class="text-lg font-bold text-brand-blue mb-1">The Plains Wind and Solar Farm</h4>
-                    <p class="text-sm text-brand-slate mb-4 font-medium">Hay, NSW | Jan 2023 – Feb 2024</p>
-                    <p class="text-sm text-brand-slate/80 leading-relaxed">
-                        Lead author of the SIA navigating community concerns regarding biodiversity and rural amenity. Conducted targeted workforce accommodation studies and authored the SIMP.
-                    </p>
-                </div>
-
-                <!-- Project Card 6 -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-grey/20 hover:shadow-md transition-shadow group">
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-teal mb-2 block">Renewable Energy</span>
-                    <h4 class="text-lg font-bold text-brand-blue mb-1">Kerrs Creek Wind Farm</h4>
-                    <p class="text-sm text-brand-slate mb-4 font-medium">Cabonne, NSW | Jan 2023 – Feb 2024</p>
-                    <p class="text-sm text-brand-slate/80 leading-relaxed">
-                        Conducted SIA and an on-the-ground Workforce Accommodation Study assessing potential pressures on housing availability and local infrastructure amidst limited stakeholder responses.
-                    </p>
-                </div>
-
-                <!-- Project Card 7 -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-grey/20 hover:shadow-md transition-shadow group md:col-span-2 lg:col-span-1">
-                    <span class="text-xs font-bold uppercase tracking-wider text-brand-teal mb-2 block">Community Research</span>
-                    <h4 class="text-lg font-bold text-brand-blue mb-1">"Small House; Big Living"</h4>
-                    <p class="text-sm text-brand-slate mb-4 font-medium">Shoalhaven City Council, NSW</p>
-                    <p class="text-sm text-brand-slate/80 leading-relaxed">
-                        Indigenous Geographies of Home: Partnered with Jerrinja LALC to co-design culturally and age-appropriate housing. Navigated complex social terrains through 'Cuppa Consultations' and situated storytelling.
-                    </p>
-                </div>
-                
-                <!-- Project Card 8 (List of additional projects) -->
-                <div class="bg-brand-blue p-6 rounded-2xl shadow-sm border border-brand-blue text-white md:col-span-2 lg:col-span-2 flex flex-col justify-center">
-                    <h4 class="text-xl font-bold mb-4">Additional Key Assessments</h4>
-                    <p class="text-sm text-white/80 mb-4">Provided comprehensive Social Impact Assessments, Stakeholder Engagement, and Workforce Studies across numerous major regional developments:</p>
-                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm text-white/90">
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Bendemeer Wind/Solar (Tamworth)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Wallaby Creek Wind Farm (Narromine)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Romani Solar Farm (Edward River)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Brewongle Solar Farm (Bathurst)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Piambong Wind Farm (Mid-Western)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Port Kembla ASMAP (Wollongong)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Kemps Creek Renewables (Penrith)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Denman BESS (Muswellbrook)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Paling Yards Wind Farm (Oberon)</li>
-                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-sage"></span> Doctoral Research: Tiny Houses (NSW Coast)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="border-t border-brand-grey/20 bg-white py-8 mt-12">
-        <div class="max-w-6xl mx-auto px-6 text-center text-sm text-brand-slate/70">
-            &copy; <script>document.write(new Date().getFullYear())</script> Hilton Penfold. Social Sustainability Portfolio.
         </div>
-    </footer>
+
+    </div>
 
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
-    <!-- Chart.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Chart JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            /* -----------------------------------------------------------
-               1. LEAFLET MAP INITIALIZATION
-            ----------------------------------------------------------- */
-            // Initialize map. Bounds will be fitted after markers are added.
-            const map = L.map('projectMap', {
-                scrollWheelZoom: false, // Prevents accidental scrolling over map
-                zoomControl: true
-            });
+        // 1. Initialize Map
+        var map = L.map('map');
 
-            // Clean, minimalist basemap (CartoDB Positron)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 20
-            }).addTo(map);
+        // 2. Add CARTO Light Base Map (NO API KEY REQUIRED, beautiful minimalist look)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
 
-            // Project Data with Coordinates
-            const projects = [
-                {
-                    name: "Gelephu - Tareythang Road",
-                    location: "Sarpang, Bhutan",
-                    lat: 26.86,
-                    lng: 90.49,
-                    desc: "Resettlement Action Plan for major highway infrastructure."
-                },
-                {
-                    name: "Geothermal Power Plant Ijen",
-                    location: "Bondowoso, East Java",
-                    lat: -7.95,
-                    lng: 114.04,
-                    desc: "Land Acquisition & Livelihood Restoration Plan."
-                },
-                {
-                    name: "Greenbushes to Bunbury Rail",
-                    location: "Western Australia",
-                    lat: -33.85,
-                    lng: 116.05,
-                    desc: "Stakeholder Engagement Plan for freight infrastructure."
-                },
-                {
-                    name: "Nadi Flood Alleviation Project",
-                    location: "Nadi, Fiji",
-                    lat: -17.80,
-                    lng: 177.41,
-                    desc: "Infrastructure social impact advisory."
-                },
-                {
-                    name: "Keri Keri Wind Farm",
-                    location: "Balranald, NSW",
-                    lat: -34.64,
-                    lng: 143.56,
-                    desc: "Social Impact Assessment (155 Turbines)."
-                },
-                {
-                    name: "The Plains Wind & Solar",
-                    location: "Hay, NSW",
-                    lat: -34.50,
-                    lng: 144.84,
-                    desc: "Social Impact Assessment & SIMP."
-                },
-                {
-                    name: "Kerrs Creek Wind Farm",
-                    location: "Cabonne, NSW",
-                    lat: -33.02,
-                    lng: 149.19,
-                    desc: "SIA & Workforce Accommodation Study."
-                },
-                {
-                    name: "Small House; Big Living",
-                    location: "Shoalhaven, NSW",
-                    lat: -34.96,
-                    lng: 150.73,
-                    desc: "Indigenous housing co-design & research."
-                },
-                {
-                    name: "Doctoral Research",
-                    location: "Byron Bay, NSW",
-                    lat: -28.64,
-                    lng: 153.61,
-                    desc: "Political Ecologies of Tiny Houses."
-                }
-            ];
+        // 3. Project Data
+        var projects = [
+            { name: "Gelephu - Tareythang Road & Bridges", role: "Resettlement Action Plan", lat: 26.86, lng: 90.26 },
+            { name: "Geothermal Power Plant Ijen", role: "Land Acquisition & Livelihood", lat: -7.94, lng: 114.04 },
+            { name: "Greenbushes to Bunbury Rail", role: "Stakeholder Engagement", lat: -33.85, lng: 116.05 },
+            { name: "The Plains Wind & Solar Farm", role: "Social Impact Assessment", lat: -34.50, lng: 144.84 },
+            { name: "Keri Keri Wind Farm", role: "Social Impact Assessment", lat: -34.63, lng: 143.56 },
+            { name: "Kerrs Creek Wind Farm", role: "Social Impact Assessment", lat: -33.15, lng: 149.12 },
+            { name: "Small House; Big Living", role: "Indigenous Geographies of Home", lat: -34.88, lng: 150.53 },
+            { name: "Nadi Flood Alleviation Project", role: "Social Safeguards", lat: -17.80, lng: 177.41 } // Fiji/Pacific
+        ];
 
-            // Custom Leaflet Marker Icon to match Theme
-            const customIcon = L.divIcon({
-                className: 'custom-div-icon',
-                html: `<div style="background-color: #0F766E; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.4);"></div>`,
-                iconSize: [14, 14],
-                iconAnchor: [7, 7]
-            });
+        // 4. Add Markers and fit bounds to cover Australia up to Bhutan and Pacific
+        var bounds = [];
+        projects.forEach(function(project) {
+            var marker = L.marker([project.lat, project.lng]).addTo(map);
+            marker.bindPopup(`<b>${project.name}</b><br><span style="color:#5e8a75;">${project.role}</span>`);
+            bounds.push([project.lat, project.lng]);
+        });
+        
+        // Pad the map view slightly so markers aren't right on the edge
+        map.fitBounds(bounds, { padding: [50, 50] });
 
-            const markers = [];
-
-            // Add Markers
-            projects.forEach(p => {
-                const marker = L.marker([p.lat, p.lng], {icon: customIcon})
-                    .addTo(map)
-                    .bindPopup(`
-                        <div class="popup-title">${p.name}</div>
-                        <div class="popup-meta mb-1">${p.location}</div>
-                        <div class="text-xs text-slate-600 mt-2">${p.desc}</div>
-                    `);
-                markers.push(marker);
-            });
-
-            // Create a FeatureGroup to calculate bounds
-            const group = new L.featureGroup(markers);
-            
-            // Fit map to bounds with some padding so markers aren't on the exact edge
-            map.fitBounds(group.getBounds(), { padding: [50, 50] });
-
-            // Fix for map rendering issues inside hidden/resizing containers
-            setTimeout(() => { map.invalidateSize(); }, 500);
-
-            /* -----------------------------------------------------------
-               2. CHART.JS SECTOR VISUALIZATION
-            ----------------------------------------------------------- */
-            const ctx = document.getElementById('sectorChart').getContext('2d');
-            
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Renewable Energy', 'Infrastructure & Transport', 'Community & Indigenous Research', 'Resources & Land Acquisition'],
-                    datasets: [{
-                        data: [45, 25, 15, 15],
-                        backgroundColor: [
-                            '#1E3A8A', // brand-blue
-                            '#0F766E', // brand-teal
-                            '#5EEAD4', // brand-sage
-                            '#94A3B8'  // brand-grey
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '75%', // Makes it a thin, elegant ring
-                    plugins: {
-                        legend: {
-                            display: false // We use our custom HTML legend beside it
-                        },
-                        tooltip: {
-                            backgroundColor: '#334155',
-                            padding: 12,
-                            titleFont: { family: 'Inter', size: 13 },
-                            bodyFont: { family: 'Inter', size: 14 },
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return context.parsed + '% of Experience';
-                                }
-                            }
+        // 5. Initialize Chart.js Visualization
+        const ctx = document.getElementById('sectorsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Renewables (Wind/Solar)', 'Major Infrastructure', 'Academic & Community', 'Resources & Energy'],
+                datasets: [{
+                    data: [45, 25, 15, 15],
+                    backgroundColor: [
+                        '#5e8a75', // Sage
+                        '#334155', // Slate
+                        '#94a3b8', // Light Slate
+                        '#cbd5e1'  // Grey
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: "'Inter', sans-serif" },
+                            color: '#334155'
                         }
-                    },
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
                     }
-                }
-            });
+                },
+                cutout: '75%' // Makes it a thin, modern ring
+            }
         });
     </script>
 </body>
